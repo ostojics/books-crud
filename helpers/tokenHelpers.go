@@ -46,3 +46,34 @@ func CreateToken(email string) (string, error) {
 
 	return tokenString, nil
 }
+
+func ValidateToken(token string) error {
+	err := godotenv.Load(".env")
+
+	secretKey := os.Getenv("SECRET_KEY")
+
+	if err != nil {
+		fmt.Println("Cannot get env variables")
+		return err
+	}
+
+	var jwtKey = []byte(secretKey)
+
+	claims := &Claims{}
+
+	tkn, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	if !tkn.Valid {
+		fmt.Println(err)
+		return err
+	}
+
+	return nil
+}

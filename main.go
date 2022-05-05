@@ -43,6 +43,7 @@ func main() {
 
 	router := gin.Default()
 	routes.PublicRoutes(router)
+	routes.PrivateRoutes(router)
 
 	router.Run(":" + port)
 }
