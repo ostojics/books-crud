@@ -17,6 +17,12 @@ func migrate(db *gorm.DB) {
 	if err != nil {
 		log.Fatal("Failed to migrate database", err)
 	}
+
+	err = models.MigrateUser(db)
+
+	if err != nil {
+		log.Fatal("Failed to migrate database", err)
+	}
 }
 
 func main() {
