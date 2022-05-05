@@ -8,6 +8,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/ostojics/books-crud/database"
 	"github.com/ostojics/books-crud/models"
+	"github.com/ostojics/books-crud/routes"
 	"gorm.io/gorm"
 )
 
@@ -41,6 +42,7 @@ func main() {
 	migrate(database.DB)
 
 	router := gin.Default()
+	routes.PublicRoutes(router)
 
 	router.Run(":" + port)
 }
