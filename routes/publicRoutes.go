@@ -9,4 +9,5 @@ import (
 func PublicRoutes(router *gin.Engine) {
 	router.POST("/users/register", controllers.Register)
 	router.POST("users/login", controllers.Login)
+	router.GET("/books", controllers.GetBooks)
 }
