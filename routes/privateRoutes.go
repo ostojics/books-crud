@@ -8,5 +8,5 @@ import (
 
 func PrivateRoutes(router *gin.Engine) {
 	router.Use(middleware.Authenticate)
-	router.GET("/books", controllers.GetBooks)
+	router.POST("/books", controllers.CreateBook)
 }
