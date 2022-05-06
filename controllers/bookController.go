@@ -41,3 +41,22 @@ func GetBooks(context *gin.Context) {
 
 	context.JSON(http.StatusOK, gin.H{"data": books})
 }
+
+func GetBookById(context *gin.Context) {
+	id := context.Param("id")
+	book := &models.Book{}
+
+	if id == "" {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Id cannot be empty"})
+		return
+	}
+
+	err := database.DB.Where("id = ?", id).First(book).Error
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": book})
+}
