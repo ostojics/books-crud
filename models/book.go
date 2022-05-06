@@ -1,8 +1,6 @@
 package models
 
 import (
-	"time"
-
 	"gorm.io/gorm"
 )
 
@@ -10,7 +8,7 @@ type Book struct {
 	Id            uint   `gorm:"primary key;autoincrement" json:"id"`
 	Title         string `json:"title"`
 	Author        string `json:"author"`
-	DatePublished time.Time `json:"date_published"`
+	DatePublished string `json:"date_published"`
 	Genre         string `json:"genre"`
 }
 
