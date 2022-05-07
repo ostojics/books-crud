@@ -46,7 +46,7 @@ func Register(context *gin.Context) {
 	response["id"] = user.Id
 	response["email"] = user.Email
 
-	context.JSON(http.StatusCreated, gin.H{"message": "User created successfully", "data": response})
+	context.JSON(http.StatusCreated, gin.H{"message": "user created successfully", "data": response})
 }
 
 func Login(context *gin.Context) {
@@ -63,7 +63,7 @@ func Login(context *gin.Context) {
 	err = database.DB.Where("email = ?", user.Email).First(&foundUser).Error
 
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": "could not get user with this email"})
+		context.JSON(http.StatusBadRequest, gin.H{"error": "could not find user with this email"})
 		fmt.Println(err)
 		return
 	}

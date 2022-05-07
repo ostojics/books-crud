@@ -11,11 +11,19 @@ import (
 
 func CreateBook(context *gin.Context) {
 	var book models.Book
+	var existingBook models.Book
 
 	err := context.BindJSON(&book)
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	_ = database.DB.Where("title = ?", book.Title).First(&existingBook).Error
+
+	if existingBook.Title != "" {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "book with this name already exists"})
 		return
 	}
 
@@ -26,7 +34,7 @@ func CreateBook(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusCreated, gin.H{"message": "Book successfully created", "data": book})
+	context.JSON(http.StatusCreated, gin.H{"message": "book successfully created", "data": book})
 }
 
 func GetBooks(context *gin.Context) {
@@ -35,7 +43,7 @@ func GetBooks(context *gin.Context) {
 	err := database.DB.Find(books).Error
 	
 	if err != nil {
-	context.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to get books %s", err.Error())}) 
+	context.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("failed to get books %s", err.Error())}) 
 	return
 	}
 
@@ -47,7 +55,7 @@ func GetBookById(context *gin.Context) {
 	book := &models.Book{}
 
 	if id == "" {
-		context.JSON(http.StatusBadRequest, gin.H{"error": "Id cannot be empty"})
+		context.JSON(http.StatusBadRequest, gin.H{"error": "id can't be empty"})
 		return
 	}
 
