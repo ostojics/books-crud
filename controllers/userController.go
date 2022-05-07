@@ -12,6 +12,7 @@ import (
 
 func Register(context *gin.Context) {
 	var user models.User
+	var existingUser models.User
 
 	 err := context.BindJSON(&user)
 
@@ -20,7 +21,14 @@ func Register(context *gin.Context) {
 		fmt.Println(err)
 		return
 	}
-	
+
+	_ = database.DB.Where("email = ?", user.Email).First(&existingUser).Error
+
+   if existingUser.Email != "" {
+	   context.JSON(http.StatusBadRequest, gin.H{"error": "user with this email already exists"})
+	   return
+   }
+
 	hashedPassword := helpers.HashPassword(user.Password)
 
 	user.Password = hashedPassword
@@ -33,12 +41,17 @@ func Register(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusCreated, gin.H{"message": "User created successfully", "data": user})
+	response := make(map[string]interface{})
+
+	response["id"] = user.Id
+	response["email"] = user.Email
+
+	context.JSON(http.StatusCreated, gin.H{"message": "User created successfully", "data": response})
 }
 
 func Login(context *gin.Context) {
 	var user models.User
-	foundUser := &models.User{}
+	var foundUser models.User
 
 	err := context.BindJSON(&user)
 
@@ -47,7 +60,7 @@ func Login(context *gin.Context) {
 		return
 	}
 
-	err = database.DB.Where("email = ?", user.Email).First(foundUser).Error
+	err = database.DB.Where("email = ?", user.Email).First(&foundUser).Error
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "could not get user with this email"})
@@ -69,6 +82,11 @@ func Login(context *gin.Context) {
 		return
 	}
 
+	response := make(map[string]interface{})
+
+	response["id"] = foundUser.Id
+	response["email"] = foundUser.Email
+
 	context.Writer.Header().Set("Authorization", token)
-	context.JSON(http.StatusOK, gin.H{"data": foundUser})
+	context.JSON(http.StatusOK, gin.H{"data": response})
 }
