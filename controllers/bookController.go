@@ -23,7 +23,7 @@ func CreateBook(context *gin.Context) {
 	_ = database.DB.Where("title = ?", book.Title).First(&existingBook).Error
 
 	if existingBook.Title != "" {
-		context.JSON(http.StatusBadRequest, gin.H{"error": "book with this name already exists"})
+		context.JSON(http.StatusBadRequest, gin.H{"error": "book with this title already exists"})
 		return
 	}
 
