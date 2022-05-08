@@ -1,6 +1,17 @@
-FROM golang:1.18-alpine3.15
-RUN mkdir /app 
-ADD . /app
+FROM golang:alpine
+
+RUN apk update && apk add --no-cache git && apk add --no-cach bash && apk add build-base
+
+RUN mkdir /app
 WORKDIR /app
-RUN go build -o main .
-CMD ["/app/main"]
+
+COPY . .
+COPY .env .
+
+RUN go get -d -v ./...
+RUN go install -v ./...
+
+RUN go build -o /build
+EXPOSE 8080
+
+CMD [ "/build" ]
