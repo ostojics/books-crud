@@ -14,6 +14,7 @@ func CreateBook(context *gin.Context) {
 	var existingBook models.Book
 
 	err := context.BindJSON(&book)
+	
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
